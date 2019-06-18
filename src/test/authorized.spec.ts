@@ -35,11 +35,11 @@ class MockConfigurationProvider implements IConfigurationProvider {
     public get(key: string): Maybe<PrimitiveType | any[]> {
         switch (key) {
             case S.AUTH_SECRET:
-                return new Maybe(AUTH_SECRET)
+                return Maybe.Just(AUTH_SECRET)
             case S.AUTH_ISSUER:
-                return new Maybe(AUTH_ISSUER)
+                return Maybe.Just(AUTH_ISSUER)
         }
-        return new Maybe
+        return Maybe.Nothing()
     }
 
     public init = () => Promise.resolve()

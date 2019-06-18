@@ -62,8 +62,8 @@ let AuthAddOn = class AuthAddOn {
         });
     }
     createToken(payload, isRefresh) {
-        const refreshExpr = this._configProvider.get(S.AUTH_EXPIRE_REFRESH).TryGetValue('30d');
-        const accessExpr = this._configProvider.get(S.AUTH_EXPIRE_ACCESS).TryGetValue(60 * 30);
+        const refreshExpr = this._configProvider.get(S.AUTH_EXPIRE_REFRESH).tryGetValue('30d');
+        const accessExpr = this._configProvider.get(S.AUTH_EXPIRE_ACCESS).tryGetValue(60 * 30);
         return new Promise((resolve, reject) => {
             jwt.sign(
             // Data
