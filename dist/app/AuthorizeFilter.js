@@ -31,7 +31,7 @@ class AuthorizeFilter extends web_1.ActionFilterBase {
     }
 }
 __decorate([
-    common_1.lazyInject(Types_1.Types.AUTH_ADDON),
+    common_1.decorators.lazyInject(Types_1.Types.AUTH_ADDON),
     __metadata("design:type", AuthAddOn_1.AuthAddOn)
 ], AuthorizeFilter.prototype, "_authAddon", void 0);
 exports.AuthorizeFilter = AuthorizeFilter;

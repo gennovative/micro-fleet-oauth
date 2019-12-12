@@ -1,6 +1,6 @@
 {
     "name": "@micro-fleet/oauth",
-    "version": "1.1.0",
+    "version": "2.3.0-rc1",
     "description": "Provides helpers for authentication and authorization.",
     "scripts": {
         "build": "npm run compile && npm run test",
@@ -45,8 +45,8 @@
         "typescript": "~3.3"
     },
     "peerDependencies": {
-        "@micro-fleet/common": "~1.4",
-        "@micro-fleet/web": "~1.2"
+        "@micro-fleet/common": "2.4.0-rc1",
+        "@micro-fleet/web": "2.4.0-rc1"
     },
     "publishConfig": {
         "access": "public"

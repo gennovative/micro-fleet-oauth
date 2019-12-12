@@ -1,3 +1,4 @@
+import { Newable } from '@micro-fleet/common'
 import { addFilterToTarget, FilterPriority } from '@micro-fleet/web'
 
 import { AuthorizeFilter } from './AuthorizeFilter'

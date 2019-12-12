@@ -1,5 +1,5 @@
 import * as express from 'express'
-import { lazyInject } from '@micro-fleet/common'
+import { decorators as d } from '@micro-fleet/common'
 import { IActionFilter, ActionFilterBase } from '@micro-fleet/web'
 
 import { AuthAddOn } from './AuthAddOn'
@@ -10,7 +10,7 @@ export class AuthorizeFilter
     extends ActionFilterBase
     implements IActionFilter {
 
-    @lazyInject(T.AUTH_ADDON) private _authAddon: AuthAddOn
+    @d.lazyInject(T.AUTH_ADDON) private _authAddon: AuthAddOn
 
     public async execute(request: express.Request, response: express.Response, next: Function): Promise<any> {
         try {

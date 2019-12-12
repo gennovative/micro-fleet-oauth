@@ -7,8 +7,8 @@ const expect = chai.expect
 import * as request from 'request-promise'
 import { StatusCodeError } from 'request-promise/errors'
 import jwt = require('jsonwebtoken')
-import { injectable, DependencyContainer, serviceContext,
-    IConfigurationProvider, Maybe, Types as CmT, constants } from '@micro-fleet/common'
+import { decorators as d, Types as CmT, constants, DependencyContainer, serviceContext,
+    IConfigurationProvider, Maybe, PrimitiveType } from '@micro-fleet/common'
 import { ExpressServerAddOn, Types as wT } from '@micro-fleet/web'
 
 import { AuthAddOn, Types as T } from '../app'
@@ -19,24 +19,25 @@ import * as Bluebird from 'bluebird'
 type SignFunction = (payload: any, secretOrPrivateKey: jwt.Secret, options: jwt.SignOptions) => Bluebird<string>
 const jwtSignAsync: SignFunction = Bluebird.promisify(jwt.sign) as any
 
-const { AuthSettingKeys: S } =  constants
+const { Auth: A } =  constants
 
 const URL = 'http://localhost',
     AUTH_SECRET = 'abcABC123',
     AUTH_ISSUER = 'localhost'
 
 
-@injectable()
+@d.injectable()
 class MockConfigurationProvider implements IConfigurationProvider {
     public readonly name: string = 'MockConfigurationProvider'
+    public readonly configFilePath: string = ''
 
     public enableRemote: boolean = false
 
     public get(key: string): Maybe<PrimitiveType | any[]> {
         switch (key) {
-            case S.AUTH_SECRET:
+            case A.AUTH_KEY_VERIFY:
                 return Maybe.Just(AUTH_SECRET)
-            case S.AUTH_ISSUER:
+            case A.AUTH_ISSUER:
                 return Maybe.Just(AUTH_ISSUER)
         }
         return Maybe.Nothing()
@@ -61,9 +62,9 @@ describe('@authorized()', function() {
         container = new DependencyContainer
         serviceContext.setDependencyContainer(container)
         container.bindConstant(CmT.DEPENDENCY_CONTAINER, container)
-        container.bind(CmT.CONFIG_PROVIDER, MockConfigurationProvider).asSingleton()
-        container.bind(T.AUTH_ADDON, AuthAddOn).asSingleton()
-        container.bind(wT.WEBSERVER_ADDON, ExpressServerAddOn).asSingleton()
+        container.bindConstructor(CmT.CONFIG_PROVIDER, MockConfigurationProvider).asSingleton()
+        container.bindConstructor(T.AUTH_ADDON, AuthAddOn).asSingleton()
+        container.bindConstructor(wT.WEBSERVER_ADDON, ExpressServerAddOn).asSingleton()
 
         server = container.resolve(wT.WEBSERVER_ADDON)
 

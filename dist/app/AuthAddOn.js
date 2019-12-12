@@ -19,7 +19,7 @@ const common_1 = require("@micro-fleet/common");
 const web_1 = require("@micro-fleet/web");
 const ExtractJwt = passportJwt.ExtractJwt;
 const JwtStrategy = passportJwt.Strategy;
-const { AuthSettingKeys: S } = common_1.constants;
+const { Auth: A } = common_1.constants;
 let AuthAddOn = class AuthAddOn {
     constructor(_serverAddOn, _configProvider) {
         this._serverAddOn = _serverAddOn;
@@ -34,9 +34,9 @@ let AuthAddOn = class AuthAddOn {
         this._serverAddOn.express.use(passport.initialize());
         const opts = {
             algorithms: ['HS256'],
-            secretOrKey: this._configProvider.get(S.AUTH_SECRET).value,
+            secretOrKey: this._configProvider.get(A.AUTH_KEY_VERIFY).value,
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            issuer: this._configProvider.get(S.AUTH_ISSUER).value,
+            issuer: this._configProvider.get(A.AUTH_ISSUER).value,
         };
         this.initToken(opts);
         return Promise.resolve();
@@ -62,18 +62,18 @@ let AuthAddOn = class AuthAddOn {
         });
     }
     createToken(payload, isRefresh) {
-        const refreshExpr = this._configProvider.get(S.AUTH_EXPIRE_REFRESH).tryGetValue('30d');
-        const accessExpr = this._configProvider.get(S.AUTH_EXPIRE_ACCESS).tryGetValue(60 * 30);
+        const refreshExpr = this._configProvider.get(A.AUTH_EXPIRE_REFRESH).tryGetValue('30d');
+        const accessExpr = this._configProvider.get(A.AUTH_EXPIRE_ACCESS).tryGetValue(60 * 30);
         return new Promise((resolve, reject) => {
             jwt.sign(
             // Data
             payload, 
             // Secret
-            this._configProvider.get(S.AUTH_SECRET).value, 
+            this._configProvider.get(A.AUTH_KEY_VERIFY).value, 
             // Config
             {
                 expiresIn: isRefresh ? refreshExpr : accessExpr,
-                issuer: this._configProvider.get(S.AUTH_ISSUER).value,
+                issuer: this._configProvider.get(A.AUTH_ISSUER).value,
             }, 
             // Callback
             (err, token) => {
@@ -98,9 +98,9 @@ let AuthAddOn = class AuthAddOn {
     }
 };
 AuthAddOn = __decorate([
-    common_1.injectable(),
-    __param(0, common_1.inject(web_1.Types.WEBSERVER_ADDON)),
-    __param(1, common_1.inject(common_1.Types.CONFIG_PROVIDER)),
+    common_1.decorators.injectable(),
+    __param(0, common_1.decorators.inject(web_1.Types.WEBSERVER_ADDON)),
+    __param(1, common_1.decorators.inject(common_1.Types.CONFIG_PROVIDER)),
     __metadata("design:paramtypes", [web_1.ExpressServerAddOn, Object])
 ], AuthAddOn);
 exports.AuthAddOn = AuthAddOn;

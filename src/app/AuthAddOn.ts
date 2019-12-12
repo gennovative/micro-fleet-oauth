@@ -1,14 +1,14 @@
 import jwt = require('jsonwebtoken')
 import * as passport from 'passport'
 import * as passportJwt from 'passport-jwt'
-import { injectable, inject, Types as cmT, IConfigurationProvider,
-    constants } from '@micro-fleet/common'
+import { decorators as d, Types as cmT, IConfigurationProvider,
+    constants, IServiceAddOn} from '@micro-fleet/common'
 import { ExpressServerAddOn, Types as wT } from '@micro-fleet/web'
 
 
 const ExtractJwt = passportJwt.ExtractJwt
 const JwtStrategy = passportJwt.Strategy
-const { AuthSettingKeys: S } = constants
+const { Auth: A } = constants
 
 export type AuthResult = {
     payload: any,
@@ -16,14 +16,14 @@ export type AuthResult = {
     status: any
 }
 
-@injectable()
+@d.injectable()
 export class AuthAddOn implements IServiceAddOn {
 
     public readonly name: string = 'AuthAddOn'
 
     constructor(
-        @inject(wT.WEBSERVER_ADDON) private _serverAddOn: ExpressServerAddOn,
-        @inject(cmT.CONFIG_PROVIDER) private _configProvider: IConfigurationProvider,
+        @d.inject(wT.WEBSERVER_ADDON) private _serverAddOn: ExpressServerAddOn,
+        @d.inject(cmT.CONFIG_PROVIDER) private _configProvider: IConfigurationProvider,
     ) {
     }
 
@@ -38,9 +38,9 @@ export class AuthAddOn implements IServiceAddOn {
 
         const opts: passportJwt.StrategyOptions = {
             algorithms: ['HS256'],
-            secretOrKey: this._configProvider.get(S.AUTH_SECRET).value as string,
+            secretOrKey: this._configProvider.get(A.AUTH_KEY_VERIFY).value as string,
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            issuer: this._configProvider.get(S.AUTH_ISSUER).value as string,
+            issuer: this._configProvider.get(A.AUTH_ISSUER).value as string,
         }
         this.initToken(opts)
         return Promise.resolve()
@@ -71,18 +71,18 @@ export class AuthAddOn implements IServiceAddOn {
     }
 
     public createToken(payload: any, isRefresh: Boolean): Promise<string> {
-        const refreshExpr = this._configProvider.get(S.AUTH_EXPIRE_REFRESH).tryGetValue('30d') as number | string
-        const accessExpr = this._configProvider.get(S.AUTH_EXPIRE_ACCESS).tryGetValue(60 * 30) as number | string
+        const refreshExpr = this._configProvider.get(A.AUTH_EXPIRE_REFRESH).tryGetValue('30d') as number | string
+        const accessExpr = this._configProvider.get(A.AUTH_EXPIRE_ACCESS).tryGetValue(60 * 30) as number | string
         return new Promise<any>((resolve, reject) => {
             jwt.sign(
                 // Data
                 payload,
                 // Secret
-                this._configProvider.get(S.AUTH_SECRET).value as string,
+                this._configProvider.get(A.AUTH_KEY_VERIFY).value as string,
                 // Config
                 {
                     expiresIn: isRefresh ? refreshExpr : accessExpr,
-                    issuer: this._configProvider.get(S.AUTH_ISSUER).value as string,
+                    issuer: this._configProvider.get(A.AUTH_ISSUER).value as string,
                 },
                 // Callback
                 (err, token) => {
