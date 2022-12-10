@@ -34,7 +34,7 @@
         "bluebird": "~3.5",
         "chai": "~4.1",
         "chai-spies": "git://github.com/chaijs/chai-spies.git#b11aeebf",
-        "express": "~4.16",
+        "express": "~4.17",
         "mocha": "^8.1.1",
         "nyc": "^15.1.0",
         "request": "~2.87",
