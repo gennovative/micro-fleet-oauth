@@ -16,7 +16,7 @@
         "prepublishOnly": "npm run release"
     },
     "dependencies": {
-        "jsonwebtoken": "~8.5",
+        "jsonwebtoken": "~9.0",
         "passport": "~0.4",
         "passport-jwt": "~4.0"
     },
